@@ -153,8 +153,11 @@ select.jump{
   font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--ink-soft);
   border:1px solid var(--line-strong);border-radius:5px;width:20px;height:20px;
   display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;
+  transition:border-color .15s ease, color .15s ease;
 }
 .option span.opt-text{font-size:15px;line-height:1.45}
+.option.selected{border-color:var(--accent);background:var(--accent-soft)}
+.option.selected .opt-letter{border-color:var(--accent);background:var(--accent);color:#fff}
 .option.correct{border-color:var(--good);background:var(--good-soft)}
 .option.correct .opt-letter{border-color:var(--good);color:var(--good)}
 .option.incorrect{border-color:var(--bad);background:var(--bad-soft)}
@@ -331,6 +334,11 @@ function init(){
     o.value=i; o.textContent='Q'+(i+1)+' · '+x[0];
     jump.appendChild(o);
   });
+  opts.addEventListener('change', (e)=>{
+    if (checked[cur] || e.target.name !== 'a') return;
+    opts.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+    e.target.closest('.option').classList.add('selected');
+  });
   render();
 }
 
@@ -357,7 +365,6 @@ function render(){
       '<input type="radio" name="a" class="sr-radio" value="'+i+'" '+(ans[cur]===i?'checked':'')+' '+(checked[cur]?'disabled':'')+'>' +
       '<span class="opt-letter">'+LETTERS[i]+'</span>' +
       '<span class="opt-text">'+x+'</span>';
-    l.addEventListener('click', ()=>{ if(!checked[cur]){ l.querySelector('input').checked = true; } });
     opts.appendChild(l);
   });
 
